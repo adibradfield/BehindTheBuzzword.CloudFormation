@@ -1,0 +1,61 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Transform": "AWS::Serverless-2016-10-31",
+  "Description": "Demo for Behind The Buzzword",
+  "Globals" : {
+    "Function": {
+        "Environment": {
+            "Variables": {
+                "ServerlessDeployment_MySQL__Host": { "Fn::GetAtt": ["RDSCluster", "Endpoint.Address"] },
+                "ServerlessDeployment_MySQL__User": "admin",
+                "ServerlessDeployment_MySQL__Password": "password"
+            }
+        },
+        "VpcConfig": {
+            "SecurityGroupIds": ["sg-0a6753618edea472d"],
+            "SubnetIds": ["subnet-0771be2d42693146b", "subnet-0fd597d4ea02188a9"]
+        }
+    }
+  },
+  "Resources": {
+    "RDSCluster" : {
+        "Type": "AWS::RDS::DBCluster",
+        "Properties" : {
+            "DatabaseName": "BehindTheBuzzword",
+            "MasterUsername" : "admin",
+            "MasterUserPassword" : "password",
+            "Engine" : "aurora",
+            "EngineVersion" : "5.6.10a",
+            "EngineMode" : "serverless",
+            "ScalingConfiguration" : {
+                "AutoPause" : true,
+                "MinCapacity" : 1,
+                "MaxCapacity" : 1,
+                "SecondsUntilAutoPause" : 1000
+            },
+            "VpcSecurityGroupIds": ["sg-0a6753618edea472d"],
+            "DBSubnetGroupName": "default-vpc-0317612b5084736da"
+        }
+    },
+    "DatabaseTableCustomResource": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "Handler": "BehindTheBuzzword.CloudFormation::BehindTheBuzzword.CloudFormation.Functions::DatabaseTableCustomResource",
+        "Runtime": "dotnetcore3.1",
+        "CodeUri": "",
+        "MemorySize": 256,
+        "Timeout": 30,
+        "Role": null,
+        "Policies": [
+          "AWSLambdaBasicExecutionRole"
+        ]
+      }
+    }
+  },
+  "Outputs": {
+    "RDSHost": {
+        "Description": "The hostname for the RDS instance",
+        "Value": { "Fn::GetAtt": ["RDSCluster", "Endpoint.Address"] }
+    }
+  }
+}

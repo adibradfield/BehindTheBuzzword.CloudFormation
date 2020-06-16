@@ -14,8 +14,8 @@ namespace BehindTheBuzzword.CloudFormation.DTO
         public string PrimaryKey { get; set; }
         public string AutoIncrement { get; set; }
 
-        public bool IsPrimaryKey => PrimaryKey.ToLower() == "true";
-        public bool IsAutoIncrement => AutoIncrement.ToLower() == "true";
+        public bool IsPrimaryKey => PrimaryKey?.ToLower() == "true";
+        public bool IsAutoIncrement => AutoIncrement?.ToLower() == "true";
     }
 
     public class DatabaseTableResponseData

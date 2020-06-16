@@ -50,6 +50,23 @@
           "AWSLambdaBasicExecutionRole"
         ]
       }
+    },
+    "TestTable": {
+        "Type": "Custom::DatabaseTable",
+        "Properties": {
+            "ServiceToken": {"Fn::GetAtt" : [ "DatabaseTableCustomResource", "Arn"]},
+            "Name": "Test",
+            "Columns": {
+                "Id": {
+                    "DataType": "INT",
+                    "PrimaryKey": "true",
+                    "AutoIncrement": "true"
+                },
+                "City": {
+                    "DataType": "VARCHAR(50)"
+                }
+            }
+        }
     }
   },
   "Outputs": {

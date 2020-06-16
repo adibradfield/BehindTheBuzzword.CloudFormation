@@ -43,7 +43,7 @@ namespace BehindTheBuzzword.CloudFormation
                         break;
                     case "Delete":
                         physicalResourceId = request.PhysicalResourceId;
-                        await DropTable(request.OldResourceProperties);
+                        await DropTable(request.ResourceProperties);
                         break;
                     default:
                         throw new NotSupportedException($"Cannot handle RequestType {request.RequestType}");
@@ -60,7 +60,7 @@ namespace BehindTheBuzzword.CloudFormation
 
         private async Task RespondToCloudFormation(CustomResourceRequest request, string physicalResourceId, Exception exception = null)
         {
-            await RespondToCloudFormation<object>(request, physicalResourceId, exception);
+            await RespondToCloudFormation<object>(request, physicalResourceId, exception: exception);
         }
 
         private async Task RespondToCloudFormation<T>(CustomResourceRequest request, string physicalResourceId, T data = null, Exception exception = null) where T : class
@@ -152,7 +152,7 @@ namespace BehindTheBuzzword.CloudFormation
 
             var newColumnDefinitions = newColumns.Select(k => $"ADD COLUMN {k} {newTable.Columns[k].DataType}{(newTable.Columns[k].IsAutoIncrement ? " AUTO_INCREMENT" : null)}");
             var deletedColumnDefinitions = deletedColumns.Select(k => $"DROP COLUMN {k}");
-            var updateColumnDefinitions = updateColumns.Select(k => $"CHANGE COLUMN {k} {k} {newTable.Columns[k].DataType}{(newTable.Columns[k].IsAutoIncrement ? " AUTO_INCREMENT" : null)}");
+            var updateColumnDefinitions = updateColumns.Select(k => $"MODIFY COLUMN {k} {newTable.Columns[k].DataType}{(newTable.Columns[k].IsAutoIncrement ? " AUTO_INCREMENT" : null)}");
 
             var alterDefinitions = new List<string>(deletedColumnDefinitions.Concat(newColumnDefinitions).Concat(updateColumnDefinitions));
 

@@ -14,5 +14,5 @@
     "template"      : "serverless.template",
     "template-parameters" : "",
     "s3-bucket"           : "aurora-state-test-bucket",
-    "stack-name"          : "behind-the-buzzword-demo"
+    "stack-name"          : "behind-the-buzzword-demo-3"
 }
